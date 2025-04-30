@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field
 from fastapi import FastAPI
 
 
+
 class Post(BaseModel):
     id: int = Field(..., gt=0)
     title: str = Field(..., min_length=2, max_length= 50)
@@ -25,6 +26,17 @@ def create_post(post: Post):
 @app.get("/")
 def read_posts():
     return{"posts": posts}
+
+
+#get a one post
+@app.get("/posts/{post_id}")
+def rear_post(post_id: int):
+    if post_id <= len(posts):
+        for post in posts:
+            if post.id == post_id:
+                return {"post": post}
+    else:
+        return {"message": "post not found"}
 
 
 #delete a post
