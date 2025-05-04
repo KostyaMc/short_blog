@@ -1,11 +1,28 @@
 from schemas import BasePost, User, Post
-from fastapi import FastAPI
-
+from fastapi import FastAPI, HTTPException
+from authx import AuthX, AuthXConfig
 
 app = FastAPI()
 
+config = AuthXConfig()
+config.JWT_ALGORITHM = "HS256"
+config.JWT_SECRET_KEY = "SECRET_KEY"
+
+security = AuthX(config=config)
+
 # fake db
 posts = []
+
+
+@app.get("/login")
+def login(username: str, password: str):
+    if username == "admin" and password == "admin":
+        token = security.create_access_token(uid=username)
+        return {"access_token": token}
+    else:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+
 
 # create a new post
 @app.post("/posts")

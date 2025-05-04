@@ -17,7 +17,6 @@ class User(BasePost):
         else:
             return name
         
-
     email: EmailStr
 
 
